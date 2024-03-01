@@ -5,7 +5,7 @@
   export let showIfSinglePage = false;
 </script>
 
-{#if showIfSinglePage || $store.totalPages > 1}
+<!-- {#if showIfSinglePage || $store.totalPages > 1}
   <div class="paginator">
     <button
       type="button"
@@ -19,7 +19,7 @@
       disabled={$store.page >= $store.totalPages}>&raquo;</button
     >
   </div>
-{/if}
+{/if} -->
 
 <style lang="scss">
   .paginator {

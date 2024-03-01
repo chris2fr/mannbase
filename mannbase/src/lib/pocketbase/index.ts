@@ -1,10 +1,11 @@
 import PocketBase, {
-  ListResult,
-  Record as PBRecord,
   type AuthProviderInfo,
   RecordService,
 } from "pocketbase";
-import type { Admin } from "pocketbase";
+
+import Record from "pocketbase";
+import ListResult from "pocketbase";
+import type Admin  from "pocketbase";
 import { readable, type Readable, type Subscriber } from "svelte/store";
 import { browser } from "$app/environment";
 import { base } from "$app/paths";
@@ -14,7 +15,8 @@ export const client = new PocketBase(
   browser ? window.location.origin + "/" + base : undefined
 );
 
-export const authModel = readable<PBRecord | Admin | null>(
+
+export const authModel = readable<Record | Admin | null>(
   null,
   function (set) {
     client.authStore.onChange((token, model) => {
@@ -89,78 +91,78 @@ function object2formdata(obj: {}) {
   return fd;
 }
 
-export interface PageStore<T = any> extends Readable<ListResult<T>> {
+export interface PageStore<T = any> extends Readable<ListResult> {
   setPage(newpage: number): Promise<void>;
   next(): Promise<void>;
   prev(): Promise<void>;
 }
 
-export function watch<T>(
-  idOrName: string,
-  queryParams = {} as any,
-  page = 1,
-  perPage = 20,
-  realtime = browser
-): PageStore<T> {
-  const collection = client.collection(idOrName);
-  let result = new ListResult(page, perPage, 0, 0, [] as T[]);
-  let set: Subscriber<ListResult<T>>;
-  const store = readable<ListResult<T>>(result, (_set) => {
-    set = _set;
-    // fetch first page
-    collection
-      .getList(page, perPage, queryParams)
-      .then((r) => set((result = r)));
-    // watch for changes (only if you're in the browser)
-    if (realtime)
-      collection.subscribe("*", ({ action, record }) => {
-        (async function (action: string) {
-          // see https://github.com/pocketbase/pocketbase/discussions/505
-          async function expand(expand: any, record: any) {
-            return expand
-              ? await collection.getOne(record.id, { expand })
-              : record;
-          }
-          switch (action) {
-            case "update":
-              record = await expand(queryParams.expand, record);
-              return result.items.map((item) =>
-                item.id === record.id ? record : item
-              );
-            case "create":
-              record = await expand(queryParams.expand, record);
-              const index = result.items.findIndex((r) => r.id === record.id);
-              // replace existing if found, otherwise append
-              if (index >= 0) {
-                result.items[index] = record;
-                return result.items;
-              } else {
-                return [...result.items, record];
-              }
-            case "delete":
-              return result.items.filter((item) => item.id !== record.id);
-          }
-          return result.items;
-        })(action).then((items) => set((result = { ...result, items })));
-      });
-  });
-  async function setPage(newpage: number) {
-    const { page, totalPages, perPage } = result;
-    if (page > 0 && page <= totalPages) {
-      set((result = await collection.getList(newpage, perPage, queryParams)));
-    }
-  }
-  return {
-    ...store,
-    setPage,
-    async next() {
-      setPage(result.page + 1);
-    },
-    async prev() {
-      setPage(result.page - 1);
-    },
-  };
-}
+// export function watch<T>(
+//   idOrName: string,
+//   queryParams = {} as any,
+//   page = 1,
+//   perPage = 20,
+//   realtime = browser
+// ): PageStore<T> {
+//   const collection = client.collection(idOrName);
+//   let result = new ListResult(page, perPage, 0, 0, [] as T[]);
+//   let set: Subscriber<ListResult>;
+//   const store = readable<ListResult>(result, (_set) => {
+//     set = _set;
+//     // fetch first page
+//     collection
+//       .getList(page, perPage, queryParams)
+//       .then((r) => set((result = r)));
+//     // watch for changes (only if you're in the browser)
+//     if (realtime)
+//       collection.subscribe("*", ({ action, record }) => {
+//         (async function (action: string) {
+//           // see https://github.com/pocketbase/pocketbase/discussions/505
+//           async function expand(expand: any, record: any) {
+//             return expand
+//               ? await collection.getOne(record.id, { expand })
+//               : record;
+//           }
+//           switch (action) {
+//             case "update":
+//               record = await expand(queryParams.expand, record);
+//               return result.items.map((item) =>
+//                 item.id === record.id ? record : item
+//               );
+//             case "create":
+//               record = await expand(queryParams.expand, record);
+//               const index = result.items.findIndex((r) => r.id === record.id);
+//               // replace existing if found, otherwise append
+//               if (index >= 0) {
+//                 result.items[index] = record;
+//                 return result.items;
+//               } else {
+//                 return [...result.items, record];
+//               }
+//             case "delete":
+//               return result.items.filter((item) => item.id !== record.id);
+//           }
+//           return result.items;
+//         })(action).then((items) => set((result = { ...result, items })));
+//       });
+//   });
+//   async function setPage(newpage: number) {
+//     const { page, totalPages, perPage } = result;
+//     if (page > 0 && page <= totalPages) {
+//       set((result = await collection.getList(newpage, perPage, queryParams)));
+//     }
+//   }
+//   return {
+//     ...store,
+//     setPage,
+//     async next() {
+//       setPage(result.page + 1);
+//     },
+//     async prev() {
+//       setPage(result.page - 1);
+//     },
+//   };
+// }
 
 export async function providerLogin(
   provider: AuthProviderInfo,

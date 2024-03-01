@@ -9,3 +9,5 @@ export const sponsor = {
   name: "SpinSpire",
   url: "https://spinspire.com",
 };
+
+export const verbatimModuleSyntax = false;
