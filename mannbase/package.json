@@ -7,7 +7,8 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "backend.exe": "cd ../pocketbase && pocketbase.exe serve --publicDir=../mannbase/build"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.42.0",
