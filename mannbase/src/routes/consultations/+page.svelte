@@ -1,25 +1,13 @@
 <script lang="ts">
   import { metadata } from "$lib/app/stores";
-  // import Image from "$lib/components/Image.svelte";
-  // import { authModel, watch } from "$lib/pocketbase";
-  import { authModel } from "$lib/pocketbase";
-  // import type { ConsultationsResponse } from "$lib/pocketbase/generated-types";
+  import { client } from "$lib/pocketbase";
   $metadata.title = "Recent Consultations";
-  // const consultations = watch<ConsultationsResponse>("consultations", {
-  //   sort: "-updated",
-  // });
-  // import { client } from "$lib/pocketbase";
-    import { consultationsStore } from "$lib";
-    import type { ConsultationsResponse } from "$lib/pocketbase/generated-types";
-    import PocketBase, { type RecordModel } from 'pocketbase';
-  // export let data: PageData;
-  const pb = new PocketBase('http://127.0.0.1:8090');
-  let consultations = <Promise<RecordModel[]>>pb.collection('consultations').getFullList({});
-  consultationsStore.set(consultations)
-
+  export const getConsultations = async () => {
+    return await client.collection('consultations').getFullList({});
+  };
 </script>
 
-{#if $authModel}
+{#if client.authStore.isAuthRecord}
   <a href="new/edit">Create New</a>
 {:else}
   <p>Please login to create new consultations.</p>
@@ -27,8 +15,9 @@
 <hr />
 <table>
   <tbody>
-    {#each $consultationsStore as consultation}
-      {#if $authModel?.id == consultation.user}
+    {#await getConsultations() then consultations}
+    {#each consultations as consultation}
+      {#if client.authStore.model?.id == consultation.user}
         <tr>
           <td><a href={consultation.id}>{consultation.quand}</a></td>
           <td><a href={`${consultation.id}/edit`}>Edit</a></td>
@@ -46,5 +35,6 @@
         <td>No consultations found.</td>
       </tr>
     {/each}
+    {/await}
   </tbody>
 </table>

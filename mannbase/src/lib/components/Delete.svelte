@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { client } from "$lib/pocketbase";
+  import { client } from "$lib/pocketbase/index";
   import { alertOnFailure } from "$lib/pocketbase/ui";
 
   export let id: string;

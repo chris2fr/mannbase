@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageStore } from ".";
+  import type { PageStore } from "./index";
 
   export let store: PageStore;
   export let showIfSinglePage = false;

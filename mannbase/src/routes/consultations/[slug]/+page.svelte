@@ -3,9 +3,12 @@
   import { page } from "$app/stores";
   import { metadata } from "$lib/app/stores";
   import Delete from "$lib/components/Delete.svelte";
-  import { client } from "$lib/pocketbase";
+  // import  type{ TypedPocketBase } from "$lib/pocketbase/generated-types";
+  // import {client} from "$lib/pocketbase/index"
   import type { PageData } from "./$types";
   export let data: PageData;
+
+
   $: ({
     consultation: { id, quand, notes },
   } = data);

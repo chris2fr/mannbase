@@ -2,7 +2,7 @@
   export let authCollection = "users";
   export let passwordLogin = true;
   export let signup = true;
-  import { client, providerLogin } from "../pocketbase";
+  import { client, providerLogin } from "../pocketbase/index";
   import Tab from "./Tab.svelte";
   import TabContent from "./TabContent.svelte";
   import TabGroup from "./TabGroup.svelte";

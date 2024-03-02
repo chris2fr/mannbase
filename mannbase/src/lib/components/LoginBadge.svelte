@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { authModel, client } from "../pocketbase";
+  import { client } from "../pocketbase/index";
   import { alerts } from "./Alerts.svelte";
   import Dialog from "./Dialog.svelte";
   import LoginForm from "./LoginForm.svelte";
@@ -19,33 +19,33 @@
   onDestroy(() => {
     unsubscribe();
   });
-  $: console.log({ $authModel });
+  // $: console.log({ client.authStore });
 </script>
 
-{#if $authModel}
+{#if client.authStore.isValid}
   <Dialog>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="badge" slot="trigger">
-      {#if $authModel.avatar}
+      {#if client.authStore.model?.avatar}
         <img
-          src={client.getFileUrl($authModel, $authModel.avatar)}
+          src={client.getFileUrl(client.authStore.model, client.authStore.model.avatar)}
           alt="profile pic"
         />
       {/if}
       <samp
-        >{$authModel?.name || $authModel?.username || $authModel?.email}</samp
+        >{client.authStore.model?.name || client.authStore.model?.username || client.authStore.model?.email}</samp
       >
     </div>
     <div class="wrapper">
       <div class="badge">
-        {#if $authModel.avatar}
+        {#if client.authStore.model?.avatar}
           <img
-            src={client.getFileUrl($authModel, $authModel.avatar)}
+            src={client.getFileUrl(client.authStore.model, client.authStore.model.avatar)}
             alt="profile pic"
           />
         {/if}
         <samp
-          >{$authModel?.name ?? $authModel?.username ?? $authModel?.email}</samp
+          >{client.authStore.model?.name ?? client.authStore.model?.username ?? client.authStore.model?.email}</samp
         >
       </div>
       <button on:click={logout}>Sign Out</button>

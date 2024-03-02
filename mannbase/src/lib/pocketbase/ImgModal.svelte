@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Record } from "pocketbase";
-  import { client } from ".";
+  import { client } from "./index";
   import Dialog from "$lib/components/Dialog.svelte";
 
   export let record: Record;

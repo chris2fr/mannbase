@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { Admin } from "pocketbase";
-  import { authModel } from "../pocketbase";
+  import { authModel } from "../pocketbase/index";
   import LoginForm from "./LoginForm.svelte";
   export let admin: boolean | undefined = undefined;
   export let slotLogin = false;

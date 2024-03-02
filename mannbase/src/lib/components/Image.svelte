@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { client } from "$lib/pocketbase";
+  import { client } from "$lib/pocketbase/index";
   import type { Record } from "pocketbase";
 
   export let record: Record;
